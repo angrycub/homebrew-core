@@ -1,19 +1,24 @@
 class Riak < Formula
-  desc "Distributed database"
+  desc "Distributed database insipred by dynamo"
   homepage "http://basho.com/products/riak-kv/"
-  url "https://s3.amazonaws.com/downloads.basho.com/riak/2.2/2.2.2/osx/10.8/riak-2.2.2-OSX-x86_64.tar.gz"
-  version "2.2.2"
-  sha256 "73fef949afe3864559fd4ead4cb368749259fac2162a9c931bed20d131f5b8cb"
-
-  bottle :unneeded
+  url "http://s3.amazonaws.com/downloads.basho.com/riak/2.2/2.2.3/riak-2.2.3.tar.gz"
+  sha256 "0a82a16c7fe004ac8223ad27db35f9c1c5f16c147161a04d9cdad31ac1f0b447"
 
   depends_on :macos => :mountain_lion
   depends_on :arch => :x86_64
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
+  depends_on "libtool" => :build
+  depends_on "otp" => :build
+  depends_on "openssl"
 
   def install
+    ENV.deparallelize
+    system "make", "rel"
+
     logdir = var + "log/riak"
     datadir = var + "lib/riak"
-    libexec.install Dir["*"]
+    libexec.install Dir["rel/riak/*"]
     logdir.mkpath
     datadir.mkpath
     (datadir + "ring").mkpath
